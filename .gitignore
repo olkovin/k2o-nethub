@@ -1,0 +1,28 @@
+# MVSM .gitignore
+
+# Skills (Claude internal)
+skills/
+
+# Generated client configs
+mvsm_client_*.txt
+mvsm_client_*.rsc
+
+# Claude Code
+.claude/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp files
+*.tmp
+*.bak
+*.log
