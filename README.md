@@ -172,6 +172,7 @@ Edit these in `nethub_server_deploy.rsc`:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `nethubName` | `hub1` | Hub identifier (used in DNS names) |
 | `nethubFQDN` | `hub.example.com` | Public IP or domain |
 | `nethubWgPort` | `51820` | WireGuard UDP port |
 | `nethubNetwork` | `10.254.0.0/24` | Tunnel network |
