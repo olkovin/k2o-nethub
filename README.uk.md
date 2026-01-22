@@ -44,12 +44,14 @@ Policy-based routing з чотирма address-lists:
 - Весь трафік через тунель
 - Клієнт отримує `/32` адресу для ізоляції від інших клієнтів
 - Доступ тільки до інтернету, БЕЗ доступу до інших NETHUB мереж
+- **Admin опція**: Встановіть `nethubGenAdmin "yes"` для `/24` адреси та доступу до hub мережі
 
 ### Selective режим (Non-RouterOS)
 
 - Тільки вказані мережі через тунель
 - Якщо мережі не вказані: попередження при першому запуску, мінімальний конфіг (тільки сервер) при другому
 - Передайте `"dgw"` як networks для переключення в DGW режим
+- **Admin опція**: Встановіть `nethubGenAdmin "yes"` для включення hub мережі в AllowedIPs
 
 ## Підтримувані платформи
 
@@ -95,6 +97,15 @@ Policy-based routing з чотирма address-lists:
 :global nethubGenPlatform "win"
 :global nethubGenMode "selective"
 :global nethubGenNetworks "192.168.10.0/24,10.20.0.0/16"
+/system script run nethub-generate-client
+```
+
+**Non-RouterOS (Admin режим - доступ до hub мережі):**
+```routeros
+:global nethubGenName "admin-phone"
+:global nethubGenPlatform "ios"
+:global nethubGenMode "dgw"
+:global nethubGenAdmin "yes"
 /system script run nethub-generate-client
 ```
 
@@ -187,6 +198,7 @@ sequenceDiagram
 | `nethubGenPlatform` | Ні | ros/win/mac/linux/ios/android | ros | Цільова платформа |
 | `nethubGenMode` | Ні | pbr/dgw/selective | pbr (ros), selective (інші) | Режим маршрутизації |
 | `nethubGenNetworks` | Ні | через кому або "dgw" | - | Мережі для selective режиму |
+| `nethubGenAdmin` | Ні | yes/true | - | Доступ до hub мережі (dgw/selective) |
 
 ## Вимоги
 

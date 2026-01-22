@@ -44,12 +44,14 @@ Generated config includes disabled example entries for documentation.
 - All traffic via tunnel
 - Client gets `/32` address for isolation from other clients
 - Access to internet only, NO access to other NETHUB networks
+- **Admin option**: Set `nethubGenAdmin "yes"` to get `/24` address and hub network access
 
 ### Selective Mode (Non-RouterOS)
 
 - Only specified networks via tunnel
 - If no networks provided: warning on first run, minimal config (server-only) on second run
 - Pass `"dgw"` as networks to switch to DGW mode
+- **Admin option**: Set `nethubGenAdmin "yes"` to include hub network in AllowedIPs
 
 ## Supported Platforms
 
@@ -95,6 +97,15 @@ Generated config includes disabled example entries for documentation.
 :global nethubGenPlatform "win"
 :global nethubGenMode "selective"
 :global nethubGenNetworks "192.168.10.0/24,10.20.0.0/16"
+/system script run nethub-generate-client
+```
+
+**Non-RouterOS (Admin mode - hub network access):**
+```routeros
+:global nethubGenName "admin-phone"
+:global nethubGenPlatform "ios"
+:global nethubGenMode "dgw"
+:global nethubGenAdmin "yes"
 /system script run nethub-generate-client
 ```
 
@@ -187,6 +198,7 @@ Edit these in `nethub_server_deploy.rsc`:
 | `nethubGenPlatform` | No | ros/win/mac/linux/ios/android | ros | Target platform |
 | `nethubGenMode` | No | pbr/dgw/selective | pbr (ros), selective (other) | Routing mode |
 | `nethubGenNetworks` | No | comma-separated or "dgw" | - | Networks for selective mode |
+| `nethubGenAdmin` | No | yes/true | - | Allow hub network access (dgw/selective) |
 
 ## Requirements
 
