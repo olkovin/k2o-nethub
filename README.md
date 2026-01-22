@@ -276,13 +276,32 @@ Edit these in `nethub_server_deploy.rsc`:
 
 </details>
 
+## Upgrade from MVSM
+
+If you have an existing MVSM installation (v3/v4), use the upgrade script:
+
+```routeros
+/import nethub_upgrade.rsc
+```
+
+The upgrade script will:
+- Preserve all existing peers, keys, and IP assignments
+- Rename interface `wg_mvsm` → `wg_nethub`
+- Update comments `MVSM` → `NETHUB`
+- Deploy new management scripts v5.0
+- Keep your custom network/port settings
+
+**No client reconfiguration needed** — existing clients will continue to work.
+
 ## Files
 
 | File | Description |
 |------|-------------|
-| `nethub_server_deploy.rsc` | Hub deployment script |
+| `nethub_server_deploy.rsc` | Fresh hub deployment script |
+| `nethub_upgrade.rsc` | Upgrade from MVSM v3/v4 to NETHUB v5.0 |
 | `.specify/specs/020-routing-modes-v2/` | Routing modes specification |
 | `README.md` | Documentation (English) |
+| `README.uk.md` | Documentation (Ukrainian) |
 
 ## Support
 
