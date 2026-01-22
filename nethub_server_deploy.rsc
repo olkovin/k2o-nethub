@@ -383,7 +383,7 @@
 :set listSrc ($listSrc . "    :put \"  IP: \$ip | \$st\"\r\n")
 :set listSrc ($listSrc . "}\r\n")
 :set listSrc ($listSrc . ":put \"========================================\"\r\n")
-:set listSrc ($listSrc . ":put \"Total: [:len \$peers]\"\r\n")
+:set listSrc ($listSrc . ":put (\"Total: \" . [:len \$peers])\r\n")
 
 /system script add name="nethub-client-list" source=$listSrc comment="$marker | list"
 
@@ -422,7 +422,7 @@
 :set statusSrc ($statusSrc . ":local peers [/interface wireguard peers find interface=wg_nethub]\r\n")
 :set statusSrc ($statusSrc . ":local on 0\r\n")
 :set statusSrc ($statusSrc . ":foreach p in=\$peers do={ :local h [/interface wireguard peers get \$p last-handshake]; :if (([:len \$h]>0) and (\$h!=\"never\")) do={ :set on (\$on+1) } }\r\n")
-:set statusSrc ($statusSrc . ":put \"Clients: [:len \$peers] total, \$on online\"\r\n")
+:set statusSrc ($statusSrc . ":put (\"Clients: \" . [:len \$peers] . \" total, \" . \$on . \" online\")\r\n")
 :set statusSrc ($statusSrc . ":put \"========================================\"\r\n")
 :set statusSrc ($statusSrc . ":put \"Scripts: nethub-generate-client, nethub-client-list,\"\r\n")
 :set statusSrc ($statusSrc . ":put \"         nethub-client-remove, nethub-uninstall\"\r\n")
