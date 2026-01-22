@@ -98,17 +98,23 @@
 :local serverPubKey [/interface wireguard get [find where name=$wgInterface] public-key]
 :put "  Public Key: $serverPubKey"
 
-# Try to get FQDN from old globals or DNS
+# Try to get FQDN from old globals (priority: nethubFQDN > mvsmServerFQDN > mvsmHubFQDN)
 :local serverFQDN "hub.example.com"
 :do {
     :global mvsmHubFQDN
-    :if ([:typeof $mvsmHubFQDN] != "nothing") do={
+    :if ([:typeof $mvsmHubFQDN] != "nothing" && [:len $mvsmHubFQDN] > 0) do={
         :set serverFQDN $mvsmHubFQDN
     }
 } on-error={}
 :do {
+    :global mvsmServerFQDN
+    :if ([:typeof $mvsmServerFQDN] != "nothing" && [:len $mvsmServerFQDN] > 0) do={
+        :set serverFQDN $mvsmServerFQDN
+    }
+} on-error={}
+:do {
     :global nethubFQDN
-    :if ([:typeof $nethubFQDN] != "nothing") do={
+    :if ([:typeof $nethubFQDN] != "nothing" && [:len $nethubFQDN] > 0 && $nethubFQDN != "hub.example.com") do={
         :set serverFQDN $nethubFQDN
     }
 } on-error={}
@@ -666,6 +672,38 @@
 /system scheduler add name="nethub-boot" on-event="/system script run nethub-startup" start-time=startup comment="$newMarker"
 
 /system script run nethub-startup
+:put "  Done"
+
+# ================================================================
+# SECTION 11: CLEANUP OLD GLOBALS
+# ================================================================
+
+:put ""
+:put "Cleaning up old variables..."
+
+# Remove old MVSM globals
+:global mvsmHubName; :set mvsmHubName
+:global mvsmHubFQDN; :set mvsmHubFQDN
+:global mvsmWgListenPort; :set mvsmWgListenPort
+:global mvsmSstpBackup; :set mvsmSstpBackup
+:global mvsmSplitTunnel; :set mvsmSplitTunnel
+:global mvsmSplitTunnelNetworks; :set mvsmSplitTunnelNetworks
+:global mvsmServerPubKey; :set mvsmServerPubKey
+:global mvsmServerName; :set mvsmServerName
+:global mvsmServerFQDN; :set mvsmServerFQDN
+:global mvsmRegSecret; :set mvsmRegSecret
+:global mvsmNextClientNum; :set mvsmNextClientNum
+:global mvsmNextClientNumber; :set mvsmNextClientNumber
+
+# Remove temporary variables
+:global peerPubKey; :set peerPubKey
+:global peerNumber; :set peerNumber
+:global peerName; :set peerName
+:global regClientToken; :set regClientToken
+:global regClientPubKey; :set regClientPubKey
+:global regClientName; :set regClientName
+:global clientIP; :set clientIP
+
 :put "  Done"
 
 # ================================================================
