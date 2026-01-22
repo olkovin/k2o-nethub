@@ -403,7 +403,7 @@
 :set rmSrc ($rmSrc . "    :put \"Usage: :global nethubRemoveName \\\"clientname\\\"; /system script run nethub-client-remove\"\r\n")
 :set rmSrc ($rmSrc . "    :error \"Missing name\"\r\n")
 :set rmSrc ($rmSrc . "}\r\n")
-:set rmSrc ($rmSrc . ":local peer [/interface wireguard peers find interface=wg_nethub comment~\$nethubRemoveName]\r\n")
+:set rmSrc ($rmSrc . ":local peer [/interface wireguard peers find where interface=wg_nethub (name~\$nethubRemoveName or comment~\$nethubRemoveName)]\r\n")
 :set rmSrc ($rmSrc . ":if ([:len \$peer] = 0) do={ :put \"Not found\"; :error \"not found\" }\r\n")
 :set rmSrc ($rmSrc . ":put \"Removing \$nethubRemoveName...\"\r\n")
 :set rmSrc ($rmSrc . "/interface wireguard peers remove \$peer\r\n")
