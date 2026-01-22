@@ -236,9 +236,56 @@ IF platform != "ros" AND mode = "pbr":
 | File | Action |
 |------|--------|
 | `mvsm_v4_server_deploy.rsc` | Full rewrite → `nethub_server_deploy.rsc` |
+| `nethub_upgrade.rsc` | **NEW** - Upgrade from MVSM v3/v4 |
 | `README.md` | Update documentation |
 | `.specify/memory/constitution.md` | Update modes |
 | `003-routing-hub-only/` | Archive |
 | `004-routing-selective/` | Archive |
 | `005-routing-full/` | Archive |
 | `006-routing-site-to-site/` | Archive |
+
+---
+
+## Upgrade Script (nethub_upgrade.rsc)
+
+### Purpose
+Upgrade existing MVSM v3/v4 installations to NETHUB v5.0 without breaking existing clients.
+
+### Behavior
+
+1. **Detect installation**
+   - Find `wg_mvsm` or `wg_nethub` interface
+   - Read current configuration (port, network, FQDN)
+
+2. **Preserve peers**
+   - All existing peers kept with their public keys
+   - IP addresses unchanged
+   - Comments updated: `MVSM` → `NETHUB`
+
+3. **Rename resources**
+   - Interface: `wg_mvsm` → `wg_nethub`
+   - Scripts: `mvsm-*` → `nethub-*`
+   - Marker: `MVSM` → `NETHUB`
+
+4. **Deploy new scripts**
+   - All v5.0 management scripts installed
+   - Globals restored from detected configuration
+
+### What is preserved
+
+| Component | Preserved |
+|-----------|-----------|
+| WireGuard private key | ✅ Yes (no client reconfig needed) |
+| Peers | ✅ Yes (all keys and IPs) |
+| Network (e.g., 10.99.0.0/24) | ✅ Yes |
+| Port (e.g., 51821) | ✅ Yes |
+| FQDN | ✅ Yes (from globals) |
+| Firewall rules | ✅ Yes (comments updated) |
+
+### What is replaced
+
+| Component | Action |
+|-----------|--------|
+| Management scripts | Replaced with v5.0 |
+| Scheduler | Updated |
+| Startup script | Regenerated with current config |
