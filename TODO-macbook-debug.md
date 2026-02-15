@@ -138,14 +138,42 @@ Peer `mvsm-MacWG` мав `allowed-address=0.0.0.0/0` на хабі — WireGuard
 
 **Selective (Roadwarrior):** `/Users/olekovin/Desktop/nethub_macbook_selective.conf`
 - Address: `10.99.0.12/24`
-- AllowedIPs: `10.99.0.0/24, 10.10.10.0/24, 10.15.15.0/24, 10.40.40.0/24, 192.168.100.0/24`
+- AllowedIPs: `10.99.0.0/24, 10.42.0.0/23, 10.10.10.0/24, 10.106.0.0/24, 10.15.15.0/24, 10.40.40.0/24, 192.168.100.0/24`
 - DNS: `10.99.0.1`
 
+### Додаткові зміни на роутерах
+
+**nethub (hub):**
+```routeros
+# Роути до мереж через bravo
+/ip route add dst-address=10.42.0.0/23 gateway=10.99.0.13 comment="bravo LAN via WG"
+/ip route add dst-address=10.10.10.0/24 gateway=10.99.0.13 comment="irishotel LAN via bravo"
+/ip route add dst-address=10.106.0.0/24 gateway=10.99.0.13 comment="iris network via bravo"
+
+# Розширений allowed-address для bravo peer
+/interface wireguard peers set [find comment~"bravo"] allowed-address=10.99.0.13/32,10.42.0.0/23,10.10.10.0/24,10.106.0.0/24
+```
+
+**bravo-chr:**
+```routeros
+# wg_nethub в k2o-internal для forward
+/interface list member add interface=wg_nethub list=k2o-internal
+/interface list member add interface=wg-irishotel list=k2o-internal
+
+# Masquerade для nethub клієнтів до irishotel
+/ip firewall nat add chain=srcnat action=masquerade src-address=10.99.0.0/24 out-interface=wg-irishotel comment="masq nethub to irishotel"
+```
+
 ### Тестування
-| Конфіг | Hub ping | Інтернет | Статус |
-|--------|----------|----------|--------|
-| DGW | ✅ | Через тунель (145.239.91.106) | Працює |
-| Selective | ✅ | Напряму (локальний IP) | Працює |
+| Мережа | Статус | Примітка |
+|--------|--------|----------|
+| Hub `10.99.0.0/24` | ✅ | |
+| Bravo LAN `10.42.0.0/23` | ✅ | |
+| irishotel `10.10.10.0/24` | ✅ | через masquerade |
+| iris `10.106.0.0/24` | ✅ | gateway на bravo |
+| omega `192.168.100.0/24` | ❌ | VM вимкнені |
+| Інтернет (selective) | ✅ | напряму |
+| Інтернет (DGW) | ✅ | через тунель |
 
 ### Примітка
-Omega infra (`192.168.100.0/24`) недоступна з хаба — VM вимкнені або проблема з omega-chr.
+Omega infra (`192.168.100.0/24`) недоступна — VM вимкнені.
